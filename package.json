@@ -1,0 +1,31 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "Microservice untuk autentikasi menggunakan Golang, Gin, GORM, PostgreSQL, dan JWT (RSA256 dengan standar JWKS). Layanan ini juga menyediakan dokumentasi API interaktif menggunakan antarmuka modern dari Scalar.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.9.0"
+  },
+  "lint-staged": {
+    "*.go": [
+      "gofmt -w",
+      "golangci-lint run"
+    ],
+    "*.{js,ts,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
