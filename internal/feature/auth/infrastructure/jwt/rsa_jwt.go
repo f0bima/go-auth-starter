@@ -8,12 +8,12 @@ import (
 	"os"
 	"time"
 
-	auth "github.com/f0bima/go-auth-starter/internal/feature/auth/domain/repository"
+	"github.com/f0bima/go-auth-starter/internal/feature/auth/domain/service"
 	"github.com/golang-jwt/jwt/v5"
 )
 
 // Compile-time check that RSAKeys implements domain.TokenGenerator
-var _ auth.TokenGenerator = (*RSAKeys)(nil)
+var _ service.TokenGenerator = (*RSAKeys)(nil)
 
 // RSAKeys holds the RSA key pair for token signing and verification.
 type RSAKeys struct {
@@ -52,10 +52,10 @@ func LoadKeys(privateKeyPath, publicKeyPath string) (*RSAKeys, error) {
 }
 
 // GetJWKS returns the JSON Web Key Set for public key distribution.
-func (k *RSAKeys) GetJWKS() auth.JWKS {
+func (k *RSAKeys) GetJWKS() service.JWKS {
 	eBytes := big.NewInt(int64(k.PublicKey.E)).Bytes()
 
-	jwk := auth.JWK{
+	jwk := service.JWK{
 		Kty: "RSA",
 		Alg: "RS256",
 		Use: "sig",
@@ -64,8 +64,8 @@ func (k *RSAKeys) GetJWKS() auth.JWKS {
 		E:   base64.RawURLEncoding.EncodeToString(eBytes),
 	}
 
-	return auth.JWKS{
-		Keys: []auth.JWK{jwk},
+	return service.JWKS{
+		Keys: []service.JWK{jwk},
 	}
 }
 
@@ -87,7 +87,7 @@ func (k *RSAKeys) GenerateToken(userID string, email string, tokenType string, e
 }
 
 // ValidateToken parses and validates a JWT token, returning the decoded claims.
-func (k *RSAKeys) ValidateToken(tokenString string) (*auth.TokenClaims, error) {
+func (k *RSAKeys) ValidateToken(tokenString string) (*service.TokenClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &jwtClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
@@ -100,7 +100,7 @@ func (k *RSAKeys) ValidateToken(tokenString string) (*auth.TokenClaims, error) {
 	}
 
 	if claims, ok := token.Claims.(*jwtClaims); ok && token.Valid {
-		return &auth.TokenClaims{
+		return &service.TokenClaims{
 			UserID: claims.UserID,
 			Email:  claims.Email,
 			Type:   claims.Type,

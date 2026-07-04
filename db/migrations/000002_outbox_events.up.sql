@@ -21,5 +21,5 @@ CREATE INDEX idx_outbox_events_aggregate ON outbox_events(aggregate_id, aggregat
 CREATE INDEX idx_outbox_events_created ON outbox_events(created_at) WHERE status = 'pending';
 
 -- Partial index for pending events (most common query)
-CREATE INDEX idx_outbox_events_pending ON outbox_events(created_at) 
-WHERE status = 'pending' AND (next_retry_at IS NULL OR next_retry_at <= NOW());
+CREATE INDEX idx_outbox_events_pending ON outbox_events(created_at, next_retry_at) 
+WHERE status = 'pending';

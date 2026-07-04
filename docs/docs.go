@@ -28,7 +28,7 @@ const docTemplate = `{
                     "200": {
                         "description": "JWKS",
                         "schema": {
-                            "$ref": "#/definitions/jwt.JWKS"
+                            "$ref": "#/definitions/dto.JWKSResponse"
                         }
                     }
                 }
@@ -53,7 +53,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.AuthRequest"
+                            "$ref": "#/definitions/dto.AuthPayload"
                         }
                     }
                 ],
@@ -82,9 +82,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh": {
+        "/auth/login/ldap": {
             "post": {
-                "description": "Get a new access token using a refresh token",
+                "description": "Login with email/username and password via LDAP to get access and refresh tokens",
                 "consumes": [
                     "application/json"
                 ],
@@ -96,12 +96,111 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "Refresh token request",
+                        "description": "LDAP Login request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.RefreshRequest"
+                            "$ref": "#/definitions/dto.AuthPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get current user information based on JWT token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/panic": {
+            "get": {
+                "description": "Intentionally panics to test the recovery middleware",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "responses": {}
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "description": "Get a new access token using a valid refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "parameters": [
+                    {
+                        "description": "Refresh request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RefreshPayload"
                         }
                     }
                 ],
@@ -149,7 +248,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.AuthRequest"
+                            "$ref": "#/definitions/dto.AuthPayload"
                         }
                     }
                 ],
@@ -173,7 +272,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth.AuthRequest": {
+        "dto.AuthPayload": {
             "type": "object",
             "required": [
                 "email",
@@ -189,18 +288,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.RefreshRequest": {
-            "type": "object",
-            "required": [
-                "refresh_token"
-            ],
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "jwt.JWK": {
+        "dto.JWKResponse": {
             "type": "object",
             "properties": {
                 "alg": {
@@ -223,16 +311,35 @@ const docTemplate = `{
                 }
             }
         },
-        "jwt.JWKS": {
+        "dto.JWKSResponse": {
             "type": "object",
             "properties": {
                 "keys": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/jwt.JWK"
+                        "$ref": "#/definitions/dto.JWKResponse"
                     }
                 }
             }
+        },
+        "dto.RefreshPayload": {
+            "type": "object",
+            "required": [
+                "refresh_token"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

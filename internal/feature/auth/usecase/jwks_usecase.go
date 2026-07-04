@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	auth "github.com/f0bima/go-auth-starter/internal/feature/auth/domain/repository"
+	"github.com/f0bima/go-auth-starter/internal/feature/auth/domain/service"
 )
 
-func (s *authUseCase) GetJWKS() auth.JWKS {
+func (s *authUseCase) GetJWKS() service.JWKS {
 	return s.tokenGen.GetJWKS()
 }

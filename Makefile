@@ -18,7 +18,10 @@ migrate-create:
 	migrate create -ext sql -dir db/migrations -seq $(name)
 
 run:
-	cd cmd/api && go run main.go
+	air
+
+dev:
+	air
 
 build:
 	cd cmd/api && go build -o ../../api.exe .
