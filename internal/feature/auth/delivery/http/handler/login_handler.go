@@ -29,9 +29,9 @@ func NewLoginHandler(useCase LoginUseCase) *LoginHandler {
 // @Accept json
 // @Produce json
 // @Param request body dto.AuthPayload true "Login request"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
-// @Failure 401 {object} map[string]interface{}
+// @Success 200 {object} response.SuccessResponse{data=dto.TokenResponse}
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 401 {object} response.ErrorResponse
 // @Router /auth/login [post]
 func (h *LoginHandler) Handle(c *gin.Context) {
 	var req dto.AuthPayload

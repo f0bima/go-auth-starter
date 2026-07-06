@@ -8,8 +8,14 @@ import (
 	auth "github.com/f0bima/go-auth-starter/internal/feature/auth/domain/repository"
 	"github.com/f0bima/go-auth-starter/internal/feature/auth/infrastructure/persistence/mapper"
 	"github.com/f0bima/go-auth-starter/internal/feature/auth/infrastructure/persistence/schema"
+	coreevent "github.com/f0bima/go-core/event"
+	"github.com/f0bima/go-core/telemetry"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"encoding/json"
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill/message"
 )
 
 // Compile-time interface checks
@@ -19,25 +25,51 @@ var (
 )
 
 type userRepo struct {
-	db *gorm.DB
+	db        *gorm.DB
+	publisher message.Publisher
 }
 
 // NewUserRepository creates a new User repository.
-func NewUserRepository(db *gorm.DB) auth.UserRepository {
-	return &userRepo{db: db}
+func NewUserRepository(db *gorm.DB, publisher message.Publisher) auth.UserRepository {
+	return &userRepo{db: db, publisher: publisher}
 }
 
 func (r *userRepo) CreateUser(ctx context.Context, user *entity.User) error {
-	s := mapper.UserEntityToSchema(user)
-	err := r.db.WithContext(ctx).Create(s).Error
-	if err != nil {
-		return err
-	}
-	// Copy back generated ID and timestamps
-	user.ID = s.ID
-	user.CreatedAt = s.CreatedAt
-	user.UpdatedAt = s.UpdatedAt
-	return nil
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		s := mapper.UserEntityToSchema(user)
+		if err := tx.Create(s).Error; err != nil {
+			return err
+		}
+
+		user.ID = s.ID
+		user.CreatedAt = s.CreatedAt
+		user.UpdatedAt = s.UpdatedAt
+
+		// Create user.created event payload
+		event := map[string]interface{}{
+			"id":         user.ID.String(),
+			"email":      user.Email,
+			"name":       "User", // Auth service might not have name, fallback
+			"created_at": user.CreatedAt,
+		}
+
+		payload, err := json.Marshal(event)
+		if err != nil {
+			return err
+		}
+
+		msg := message.NewMessage(watermill.NewUUID(), payload)
+
+		// Inject trace context so that the Order service can link it
+		telemetry.InjectWatermillContext(ctx, msg)
+
+		// Use PublishWithinTx to publish to the SQL Outbox safely within the GORM transaction
+		if err := coreevent.PublishWithinTx(tx, "user.created", msg, watermill.NewStdLogger(false, false)); err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (r *userRepo) GetUserByEmail(ctx context.Context, email string) (*entity.User, error) {

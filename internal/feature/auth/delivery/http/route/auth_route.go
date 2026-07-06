@@ -26,7 +26,7 @@ func RegisterRoutes(
 		authGroup.POST("/login", loginHandler.Handle)
 		authGroup.POST("/login/ldap", ldapLoginHandler.Handle)
 		authGroup.POST("/refresh", refreshHandler.Handle)
-		
+
 		// Protected endpoints
 		protectedGroup := authGroup.Group("")
 		protectedGroup.Use(middleware.Auth(pubKey))

@@ -3,8 +3,9 @@ package handler
 import (
 	"context"
 
-	"github.com/f0bima/go-auth-starter/internal/feature/auth/domain/entity"
+	_ "github.com/f0bima/go-auth-starter/internal/feature/auth/delivery/http/dto"
 	"github.com/f0bima/go-auth-starter/internal/feature/auth/delivery/http/mapper"
+	"github.com/f0bima/go-auth-starter/internal/feature/auth/domain/entity"
 	"github.com/f0bima/go-core/response"
 	"github.com/gin-gonic/gin"
 )
@@ -28,9 +29,9 @@ func NewMeHandler(useCase MeUseCase) *MeHandler {
 // @Tags auth
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} map[string]interface{}
-// @Failure 401 {object} map[string]interface{}
-// @Failure 404 {object} map[string]interface{}
+// @Success 200 {object} response.SuccessResponse{data=dto.UserResponse}
+// @Failure 401 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
 // @Router /auth/me [get]
 func (h *MeHandler) Handle(c *gin.Context) {
 	userID, exists := c.Get("user_id")

@@ -30,8 +30,8 @@ func NewRegisterHandler(useCase RegisterUseCase) *RegisterHandler {
 // @Accept json
 // @Produce json
 // @Param request body dto.AuthPayload true "Register request"
-// @Success 201 {object} map[string]interface{}
-// @Failure 400 {object} map[string]interface{}
+// @Success 201 {object} response.SuccessResponse{data=dto.UserResponse}
+// @Failure 400 {object} response.ErrorResponse
 // @Router /auth/register [post]
 func (h *RegisterHandler) Handle(c *gin.Context) {
 	var req dto.AuthPayload

@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  dto.AuthPayload:
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload:
     properties:
       email:
         type: string
@@ -11,7 +11,7 @@ definitions:
     - email
     - password
     type: object
-  dto.JWKResponse:
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKResponse:
     properties:
       alg:
         type: string
@@ -26,19 +26,62 @@ definitions:
       use:
         type: string
     type: object
-  dto.JWKSResponse:
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKSResponse:
     properties:
       keys:
         items:
-          $ref: '#/definitions/dto.JWKResponse'
+          $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKResponse'
         type: array
     type: object
-  dto.RefreshPayload:
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.RefreshPayload:
     properties:
       refresh_token:
         type: string
     required:
     - refresh_token
+    type: object
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+    type: object
+  response.ErrorBody:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/response.ErrorDetail'
+        type: array
+      message:
+        type: string
+    type: object
+  response.ErrorDetail:
+    properties:
+      code:
+        type: string
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/response.ErrorBody'
+    type: object
+  response.SuccessResponse:
+    properties:
+      data: {}
     type: object
 host: localhost:8080
 info:
@@ -56,7 +99,7 @@ paths:
         "200":
           description: JWKS
           schema:
-            $ref: '#/definitions/dto.JWKSResponse'
+            $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKSResponse'
       tags:
       - auth
   /auth/login:
@@ -70,25 +113,27 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.AuthPayload'
+          $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       tags:
       - auth
   /auth/login/ldap:
@@ -103,25 +148,27 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.AuthPayload'
+          $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       tags:
       - auth
   /auth/me:
@@ -133,18 +180,20 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse'
+              type: object
         "401":
           description: Unauthorized
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       security:
       - BearerAuth: []
       tags:
@@ -168,25 +217,27 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.RefreshPayload'
+          $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.RefreshPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       tags:
       - auth
   /auth/register:
@@ -200,20 +251,23 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.AuthPayload'
+          $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse'
+              type: object
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       tags:
       - auth
 securityDefinitions:

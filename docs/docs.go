@@ -28,7 +28,7 @@ const docTemplate = `{
                     "200": {
                         "description": "JWKS",
                         "schema": {
-                            "$ref": "#/definitions/dto.JWKSResponse"
+                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKSResponse"
                         }
                     }
                 }
@@ -53,7 +53,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.AuthPayload"
+                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload"
                         }
                     }
                 ],
@@ -61,22 +61,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     }
                 }
@@ -101,7 +110,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.AuthPayload"
+                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload"
                         }
                     }
                 ],
@@ -109,22 +118,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     }
                 }
@@ -148,22 +166,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     }
                 }
@@ -200,7 +227,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.RefreshPayload"
+                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.RefreshPayload"
                         }
                     }
                 ],
@@ -208,22 +235,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     }
                 }
@@ -248,7 +284,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.AuthPayload"
+                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload"
                         }
                     }
                 ],
@@ -256,15 +292,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.SuccessResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/response.ErrorResponse"
                         }
                     }
                 }
@@ -272,7 +318,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.AuthPayload": {
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.AuthPayload": {
             "type": "object",
             "required": [
                 "email",
@@ -288,7 +334,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.JWKResponse": {
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKResponse": {
             "type": "object",
             "properties": {
                 "alg": {
@@ -311,18 +357,18 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.JWKSResponse": {
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKSResponse": {
             "type": "object",
             "properties": {
                 "keys": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dto.JWKResponse"
+                        "$ref": "#/definitions/github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.JWKResponse"
                     }
                 }
             }
         },
-        "dto.RefreshPayload": {
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.RefreshPayload": {
             "type": "object",
             "required": [
                 "refresh_token"
@@ -331,6 +377,73 @@ const docTemplate = `{
                 "refresh_token": {
                     "type": "string"
                 }
+            }
+        },
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_f0bima_go-auth-starter_internal_feature_auth_delivery_http_dto.UserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ErrorBody": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.ErrorDetail"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ErrorDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/response.ErrorBody"
+                }
+            }
+        },
+        "response.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {}
             }
         }
     },
