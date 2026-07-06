@@ -15,7 +15,7 @@ import (
 func NewAMQPPublisher(amqpURI string, logger watermill.LoggerAdapter) (message.Publisher, error) {
 	amqpConfig := amqp.NewDurablePubSubConfig(
 		amqpURI,
-		amqp.GenerateQueueNameTopicNameWithSuffix("events"),
+		amqp.GenerateQueueNameTopicNameWithSuffix("queue"),
 	)
 
 	publisher, err := amqp.NewPublisher(amqpConfig, logger)
